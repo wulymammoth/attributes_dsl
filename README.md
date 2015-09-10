@@ -1,5 +1,5 @@
-AttributesDSL
-===================
+Attributes DSL
+==============
 
 [![Gem Version](https://img.shields.io/gem/v/attributes_dsl.svg?style=flat)][gem]
 [![Build Status](https://img.shields.io/travis/nepalez/attributes_dsl/master.svg?style=flat)][travis]
@@ -8,12 +8,108 @@ AttributesDSL
 [![Coverage](https://img.shields.io/coveralls/nepalez/attributes_dsl.svg?style=flat)][coveralls]
 [![Inline docs](http://inch-ci.org/github/nepalez/attributes_dsl.svg)][inch]
 
-@todo: describe the module
+Lightweight DSL to define PORO attributes.
+
+Uses immutable (deeply frozen) instances via [ice_nine][ice_nine] gem.
 
 Synopsis
 --------
 
-@todo Describe the base use
+```ruby
+require "attributes_dsl"
+
+class User
+  extend AttributesDSL
+
+  # `name` is required should be symbolized
+  attribute :name, required: true do |value|
+    value.to_s.to_sym
+  end
+
+  # `sex` is optional and set to `:male` by default.
+  # It can be set to either :male or :female
+  attribute :sex, default: :male do |value|
+    (value == :male )? :male : :female
+  end
+
+  # `age` is optional and set to `nil` by default.
+  # Then it is converted to integer
+  attribute :age, &:to_i
+
+  # `position` is optional and set to `nil` by default
+  attribute :position
+
+  # All other attributes are ignored
+end
+
+user = User.new(name: "Jane", sex: :women, age: "26", place: "Moscow")
+user.attributes
+# => { name: :Jane, sex: :female, age: 26, position: nil }
+
+# Aliases for attributes[:some_attribute]
+user.name     # => :Jane
+user.sex      # => :female
+user.age      # => 26
+user.position # => nil
+
+# Required attributes should be assigned:
+user = User.new(sex: :women, age: "26", place: "Moscow")
+# => #<ArgumentError "Undefined attributes: name">
+```
+
+Additional Details
+------------------
+
+The `attribute` class method takes the `name` and 2 options:
+- `:default` for the default value (otherwise `nil`);
+- `:required` to declare the attribute as required. It will be ignored if a default value is provided!
+
+It is also takes the block, used to coerce a value. The coercer is applied to the default value too.
+
+Also notice, that instance methods (like `#name`) are just aliases for the corresponding value of the `#attributes` hash. Instance variables aren't defined for them (to ensure syncronization between `#name` and `#attributes[:name]`):
+
+```ruby
+user = User.new(name: "John")
+user.attributes # => { name: :John, sex: :male, age: 0, position: nil }
+user.name # => :John
+
+# but
+user.instance_variable_get :@name # => nil
+```
+
+You're free to redefine attributes (class settings are used by the initializer only):
+
+```ruby
+user.attributes[:name] = "Jim"
+user.attributes # => { name: "Jim", sex: :male, age: 0, position: nil }
+user.name # => "Jim"
+```
+
+But if you (like me) prefer instance immutability, you can deeply freeze instances safely:
+
+```ruby
+require "ice_nine"
+
+class User
+  # ... staff like before
+
+  def initializer(attributes)
+    super
+    IceNine.deep_freeze(self)
+  end
+end
+
+args = { user: "Joe" }
+
+user = User.new(args)
+user.frozen?            # => true
+user.attributes.frozen? # => true
+
+# "Safely" means:
+args.frozen? # => false
+```
+
+Freezing instances to exclude side effects is a part of my coding style. That's why the gem doesn't (and won't do) care about changing attributes after initialization.
 
 Installation
 ------------
@@ -44,6 +140,8 @@ Tested under rubies [compatible to MRI 1.9+][travis].
 
 Uses [RSpec][rspec] 3.0+ for testing and [hexx-suit][hexx-suit] for dev/test tools collection.
 
+100% [mutant]-proof covered.
+
 Contributing
 ------------
 
@@ -71,3 +169,4 @@ See the [MIT LICENSE](LICENSE).
 [rspec]: http://rspec.org
 [hexx-suit]: https://github.com/hexx-rb/hexx-suit
 [mutant]: https://github.com/mbj/mutant
+[ice_nine]: https://github.com/dkubb/ice_nine
