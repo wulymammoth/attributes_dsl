@@ -14,19 +14,25 @@ describe AttributesDSL::Attributes do
   describe "#attributes" do
     subject { attributes.attributes }
 
-    it { is_expected.to be_kind_of Set }
+    it { is_expected.to be_kind_of Hash }
     it { is_expected.to be_empty }
   end # describe #attributes
 
   describe "#register" do
-    subject { attributes.register(:foo, default: :FOO, &coercer) }
+    subject do
+      attributes.register(:bar).register(:foo, default: :FOO, &coercer)
+    end
 
     it "returns new collection" do
       expect(subject).to be_kind_of described_class
     end
 
-    it "registers the attribute" do
-      attribute = subject.attributes.first
+    it "adds attributes" do
+      expect(subject.attributes.keys).to contain_exactly(:bar, :foo)
+    end
+
+    it "uses arguments" do
+      attribute = subject.attributes[:foo]
 
       expect(attribute).to be_kind_of AttributesDSL::Attribute
       expect(attribute.name).to eql :foo

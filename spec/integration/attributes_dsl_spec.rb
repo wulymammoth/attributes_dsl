@@ -15,8 +15,8 @@ describe AttributesDSL do
   end
 
   before do
-    klass.attribute(:foo, default: :FOO, &:to_s)
-    klass.attribute("bar", required: true)
+    klass.attribute(:foo, &:to_s)
+    klass.attribute("bar")
     klass.attribute(:baz, &:to_i)
   end
 
@@ -25,12 +25,12 @@ describe AttributesDSL do
   context "when all required attributes are set" do
     let(:arguments) { { bar: :BAR, baz: "42" } }
 
-    it "sets the attributes" do
-      expect(subject.attributes).to eql(foo: "FOO", bar: :BAR, baz: 42)
+    it "initializes attributes" do
+      expect(subject.attributes).to eql(foo: "", bar: :BAR, baz: 42)
     end
 
     it "defines methods for every attribute" do
-      expect(subject.foo).to eql "FOO"
+      expect(subject.foo).to eql ""
       expect(subject.bar).to eql :BAR
       expect(subject.baz).to eql 42
     end
@@ -42,6 +42,8 @@ describe AttributesDSL do
 
   context "when a required attribute is missed" do
     let(:arguments) { { foo: :FOO, baz: "42" } }
+
+    before { klass.attribute("bar", required: true) }
 
     it "fails" do
       expect { subject }.to raise_error ArgumentError

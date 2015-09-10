@@ -21,10 +21,10 @@ module AttributesDSL
 
     # Initializes an immutable collection with an initial set of attributes
     #
-    # @param [Set] attributes
+    # @param [Hash] attributes
     #
-    def initialize(attributes = nil)
-      @attributes = Set.new attributes
+    def initialize(attributes = {})
+      @attributes = attributes
       IceNine.deep_freeze(self)
     end
 
@@ -36,7 +36,9 @@ module AttributesDSL
     # @return [AttributesDSL::Attributes]
     #
     def register(name, options = {}, &coercer)
-      self.class.new(attributes.to_a << Attribute.new(name, options, &coercer))
+      self.class.new(
+        attributes.merge(name => Attribute.new(name, options, &coercer))
+      )
     end
 
     # Extracts instance attributes from the input hash
@@ -59,13 +61,13 @@ module AttributesDSL
 
     def validate(input)
       undefined = required - input.keys
-      return attributes if undefined.empty?
+      return attributes.values if undefined.empty?
 
       fail ArgumentError.new "Undefined attributes: #{undefined.join(", ")}"
     end
 
     def required
-      attributes.select(&:required).map(&:name)
+      attributes.values.select(&:required).map(&:name)
     end
 
   end # class Attributes
