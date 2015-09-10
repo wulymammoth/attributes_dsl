@@ -32,3 +32,8 @@ end
 
 desc "Runs all the necessary metrics before making a commit"
 task prepare: %w(exhort check:inch check:rubocop check:fu)
+
+desc "Runs benchmarks"
+task :benchmark do
+  system "ruby benchmark/run.rb"
+end

@@ -111,6 +111,37 @@ args.frozen? # => false
 
 Freezing instances to exclude side effects is a part of my coding style. That's why the gem doesn't (and won't do) care about changing attributes after initialization.
 
+Benchmarks
+----------
+
+The list of gems to compare has been taken from [Idiosyncratic Ruby #18][idiosyncratic_ruby] by Jan Lelis. Look at the [benchmark example][benchmakrs] for details. I've selected only those gems that support initialization from hash:
+
+```
+-------------------------------------------------
+               anima    202.863k (± 5.1%) i/s -      1.023M
+              kwattr    171.461k (± 5.3%) i/s -    855.680k
+     fast_attributes    156.596k (± 2.5%) i/s -    785.792k
+      attributes_dsl     58.966k (± 4.6%) i/s -    296.514k
+         active_attr     58.322k (± 2.8%) i/s -    293.205k
+              virtus     45.734k (± 2.7%) i/s -    228.960k
+
+Comparison:
+               anima:   202862.9 i/s
+              kwattr:   171460.9 i/s - 1.18x slower
+     fast_attributes:   156596.3 i/s - 1.30x slower
+      attributes_dsl:    58966.5 i/s - 3.44x slower
+         active_attr:    58321.6 i/s - 3.48x slower
+              virtus:    45734.3 i/s - 4.44x slower
+```
+
+Results above are pretty reasonable.
+
+The gem is faster than `virtus` that has many additional features.
+
+It is as fast as `active_attrs` (but has more customizable coercers).
+
+It is 2 times slower than `fast_attributes` that has no coercer and default values. And it is 3-3.5 times slower than `anima` and `kwattr` that provides only the base settings.
+
 Installation
 ------------
 
@@ -170,3 +201,5 @@ See the [MIT LICENSE](LICENSE).
 [hexx-suit]: https://github.com/hexx-rb/hexx-suit
 [mutant]: https://github.com/mbj/mutant
 [ice_nine]: https://github.com/dkubb/ice_nine
+[idiosyncratic_ruby]: http://idiosyncratic-ruby.com/18-con-struct-attributes.html
+[benchmark]: benchmark/run.rb

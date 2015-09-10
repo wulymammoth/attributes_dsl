@@ -1,6 +1,6 @@
 ---
 language:     ruby
-bundler_args: --without metrics
+bundler_args: --without metrics --without benchmarks
 cache:        bundler
 script:       bundle exec rake test:coverage:run
 rvm:
