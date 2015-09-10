@@ -64,7 +64,7 @@ module AttributesDSL
   #
   # @raise [ArgumentError] in case a required attribute is missed
   #
-  def new(hash)
+  def new(hash = {})
     super attributes.extract(hash)
   end
 

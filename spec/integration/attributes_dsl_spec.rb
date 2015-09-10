@@ -22,6 +22,14 @@ describe AttributesDSL do
 
   subject { klass.new(arguments) }
 
+  context "without arguments" do
+    subject { klass.new }
+
+    it "initializes default attributes" do
+      expect(subject.attributes).to eql(foo: "", bar: nil, baz: 0)
+    end
+  end
+
   context "when all required attributes are set" do
     let(:arguments) { { bar: :BAR, baz: "42" } }
 
