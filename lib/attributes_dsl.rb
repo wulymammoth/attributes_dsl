@@ -10,5 +10,6 @@ require "ice_nine"
 module AttributesDSL
 
   require_relative "attributes_dsl/attribute"
+  require_relative "attributes_dsl/attributes"
 
 end # module AttributesDSL
