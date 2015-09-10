@@ -136,7 +136,7 @@ gem install attributes_dsl
 Compatibility
 -------------
 
-Tested under rubies [compatible to MRI 1.9+][travis].
+Tested under rubies [compatible to MRI 1.9+][versions].
 
 Uses [RSpec][rspec] 3.0+ for testing and [hexx-suit][hexx-suit] for dev/test tools collection.
 
@@ -165,7 +165,7 @@ See the [MIT LICENSE](LICENSE).
 [gemnasium]: https://gemnasium.com/nepalez/attributes_dsl
 [travis]: https://travis-ci.org/nepalez/attributes_dsl
 [inch]: https://inch-ci.org/github/nepalez/attributes_dsl
-[travis]: .travis.yml
+[versions]: .travis.yml
 [rspec]: http://rspec.org
 [hexx-suit]: https://github.com/hexx-rb/hexx-suit
 [mutant]: https://github.com/mbj/mutant
