@@ -56,18 +56,6 @@ module AttributesDSL
     define_method(s_name) { attributes.fetch(s_name) }
   end
 
-  # Object contstructor that filters hash of attributes
-  #
-  # @param [Hash] hash The hash of attributes to be assinged
-  #
-  # @return [Object]
-  #
-  # @raise [ArgumentError] in case a required attribute is missed
-  #
-  def new(hash = {})
-    super attributes.extract(hash)
-  end
-
   # @private
   def self.extended(klass)
     # use __send__ for compatibility to 1.9.3 (where `.include` was private)
@@ -85,12 +73,12 @@ module AttributesDSL
 
     # Initializes the object and sets the hash of its [#attributes]
     #
-    # Uses attributes prepared by [.new]
-    #
     # @param [Hash] attributes
     #
-    def initialize(attributes)
-      @attributes = attributes
+    # @raise [ArgumentError] in case a required attribute is missed
+    #
+    def initialize(attributes = {})
+      @attributes = self.class.attributes.extract(attributes)
     end
 
   end # module InstanceMethods

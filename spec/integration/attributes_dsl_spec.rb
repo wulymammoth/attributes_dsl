@@ -3,16 +3,7 @@
 describe AttributesDSL do
 
   let(:coercer) { -> value { value.to_s } }
-  let(:klass) do
-    Class.new do
-      extend AttributesDSL
-
-      def initialize(attributes)
-        super
-        IceNine.deep_freeze(self)
-      end
-    end
-  end
+  let(:klass) { Class.new { extend AttributesDSL } }
 
   before do
     klass.attribute(:foo, &:to_s)
@@ -32,6 +23,16 @@ describe AttributesDSL do
 
   context "when all required attributes are set" do
     let(:arguments) { { bar: :BAR, baz: "42" } }
+    let(:klass) do
+      Class.new do
+        extend AttributesDSL
+
+        def initialize(attributes = {})
+          super
+          IceNine.deep_freeze(self)
+        end
+      end
+    end
 
     it "initializes attributes" do
       expect(subject.attributes).to eql(foo: "", bar: :BAR, baz: 42)
