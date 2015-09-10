@@ -122,20 +122,20 @@ The results are following:
 
 ```
 -------------------------------------------------
-               anima    202.863k (± 5.1%) i/s -      1.023M
-              kwattr    171.461k (± 5.3%) i/s -    855.680k
-     fast_attributes    156.596k (± 2.5%) i/s -    785.792k
-      attributes_dsl     58.966k (± 4.6%) i/s -    296.514k
-         active_attr     58.322k (± 2.8%) i/s -    293.205k
-              virtus     45.734k (± 2.7%) i/s -    228.960k
+               anima    211.638k (± 3.7%) i/s -      1.071M
+              kwattr    187.276k (± 3.6%) i/s -    947.484k
+     fast_attributes    160.916k (± 2.4%) i/s -    816.726k
+      attributes_dsl     71.850k (± 3.0%) i/s -    365.365k
+         active_attr     71.489k (± 3.6%) i/s -    357.995k
+              virtus     45.554k (± 7.1%) i/s -    229.338k
 
 Comparison:
-               anima:   202862.9 i/s
-              kwattr:   171460.9 i/s - 1.18x slower
-     fast_attributes:   156596.3 i/s - 1.30x slower
-      attributes_dsl:    58966.5 i/s - 3.44x slower
-         active_attr:    58321.6 i/s - 3.48x slower
-              virtus:    45734.3 i/s - 4.44x slower
+               anima:   211637.9 i/s
+              kwattr:   187276.2 i/s - 1.13x slower
+     fast_attributes:   160916.1 i/s - 1.32x slower
+      attributes_dsl:    71850.0 i/s - 2.95x slower
+         active_attr:    71489.1 i/s - 2.96x slower
+              virtus:    45553.8 i/s - 4.65x slower
 ```
 
 Results above are pretty reasonable.
@@ -144,7 +144,7 @@ The gem is faster than `virtus` that has many additional features.
 
 It is as fast as `active_attrs` (but has more customizable coercers).
 
-It is 2 times slower than `fast_attributes` that has no coercer and default values. And it is 3-3.5 times slower than `anima` and `kwattr` that provides only the base settings.
+It is 2 times slower than `fast_attributes` that has no coercer and default values. And it is 3 times slower than `anima` and `kwattr` that provides only the base settings.
 
 Installation
 ------------

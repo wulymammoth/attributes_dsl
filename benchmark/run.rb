@@ -94,28 +94,28 @@ end
 Benchmark.ips do |x|
   x.config time: 5, warmup: 5
 
-  x.report("attributes_dsl") do
-    AttributesDSLExample.call
-  end
-
-  x.report("virtus") do
-    VirtusExample.call
-  end
-
-  x.report("active_attr") do
-    AttributesDSLExample.call
-  end
-
-  x.report("fast_attributes") do
-    FastAttributesExample.call
-  end
-
   x.report("anima") do
     AnimaExample.call
   end
 
   x.report("kwattr") do
     KwattrExample.call
+  end
+
+  x.report("fast_attributes") do
+    FastAttributesExample.call
+  end
+
+  x.report("attributes_dsl") do
+    AttributesDSLExample.call
+  end
+
+  x.report("active_attr") do
+    AttributesDSLExample.call
+  end
+
+  x.report("virtus") do
+    VirtusExample.call
   end
 
   x.compare!
