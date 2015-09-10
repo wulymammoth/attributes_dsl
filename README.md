@@ -114,7 +114,11 @@ Freezing instances to exclude side effects is a part of my coding style. That's 
 Benchmarks
 ----------
 
-The list of gems to compare has been taken from [Idiosyncratic Ruby #18][idiosyncratic_ruby] by Jan Lelis. Look at the [benchmark example][benchmakrs] for details. I've selected only those gems that support initialization from hash:
+The list of gems to compare has been taken from [Idiosyncratic Ruby #18][idiosyncratic_ruby] by Jan Lelis. I've selected only those gems that support initialization from hash.
+
+Look at the [benchmark source][benchmark] for details.
+
+The results are following:
 
 ```
 -------------------------------------------------
