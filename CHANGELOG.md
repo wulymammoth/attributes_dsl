@@ -1,4 +1,10 @@
-## version 0.0.2 to be released
+## version 0.0.2 2015-09-11
+
+This version is a result of applying v0.0.1 to the existing gems:
+
+* [abstract_mapper](https://github.com/nepalez/abstract_mapper)
+* [query_builder](https://github.com/nepalez/query_builder)
+* [rom-kafka](https://github.com/nepalez/rom-kafka) (WIP)
 
 ### Added
 
