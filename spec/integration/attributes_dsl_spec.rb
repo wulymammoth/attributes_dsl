@@ -13,50 +13,64 @@ describe AttributesDSL do
 
   subject { klass.new(arguments) }
 
-  context "without arguments" do
-    subject { klass.new }
+  describe "instance" do
 
-    it "initializes default attributes" do
-      expect(subject.attributes).to eql(foo: "", bar: nil, baz: 0)
-    end
-  end
+    context "without arguments" do
+      subject { klass.new }
 
-  context "when all required attributes are set" do
-    let(:arguments) { { bar: :BAR, baz: "42" } }
-    let(:klass) do
-      Class.new do
-        extend AttributesDSL
-
-        def initialize(attributes = {})
-          super
-          IceNine.deep_freeze(self)
-        end
+      it "initializes default attributes" do
+        expect(subject.attributes).to eql(foo: "", bar: nil, baz: 0)
       end
     end
 
-    it "initializes attributes" do
-      expect(subject.attributes).to eql(foo: "", bar: :BAR, baz: 42)
+    context "when all required attributes are set" do
+      let(:arguments) { { bar: :BAR, baz: "42" } }
+      let(:klass) do
+        Class.new do
+          extend AttributesDSL
+
+          def initialize(attributes = {})
+            super
+            IceNine.deep_freeze(self)
+          end
+        end
+      end
+
+      it "initializes attributes" do
+        expect(subject.attributes).to eql(foo: "", bar: :BAR, baz: 42)
+      end
+
+      it "defines methods for every attribute" do
+        expect(subject.foo).to eql ""
+        expect(subject.bar).to eql :BAR
+        expect(subject.baz).to eql 42
+      end
+
+      it "doesn't freeze argument" do
+        expect { subject }.not_to change { arguments.frozen? }
+      end
     end
 
-    it "defines methods for every attribute" do
-      expect(subject.foo).to eql ""
-      expect(subject.bar).to eql :BAR
-      expect(subject.baz).to eql 42
+    context "when a required attribute is missed" do
+      let(:arguments) { { foo: :FOO, baz: "42" } }
+
+      before { klass.attribute("bar", required: true) }
+
+      it "fails" do
+        expect { subject }.to raise_error ArgumentError
+      end
     end
 
-    it "doesn't freeze argument" do
-      expect { subject }.not_to change { arguments.frozen? }
+  end # describe instance
+
+  describe "subclass" do
+
+    subject { Class.new(klass) }
+
+    it "inherits parent attributes" do
+      expect(subject.new.attributes).to eql(klass.new.attributes)
     end
-  end # context
 
-  context "when a required attribute is missed" do
-    let(:arguments) { { foo: :FOO, baz: "42" } }
-
-    before { klass.attribute("bar", required: true) }
-
-    it "fails" do
-      expect { subject }.to raise_error ArgumentError
-    end
-  end # context
+  end # describe subclass
 
 end # describe AttributesDSL

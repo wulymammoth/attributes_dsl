@@ -1,5 +1,9 @@
 ## version 0.0.2 to be released
 
+### Added
+
+* Support for inheritance of attributes (nepalez)
+
 ### Bugs fixed
 
 * Allow initializer to be used without arguments (nepalez)

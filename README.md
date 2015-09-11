@@ -60,13 +60,18 @@ user = User.new(sex: :women, age: "26", place: "Moscow")
 Additional Details
 ------------------
 
+### Attribute declaration
+
 The `attribute` class method takes the `name` and 2 options:
+
 - `:default` for the default value (otherwise `nil`);
 - `:required` to declare the attribute as required. It will be ignored if a default value is provided!
 
 It is also takes the block, used to coerce a value. The coercer is applied to the default value too.
 
-Also notice, that instance methods (like `#name`) are just aliases for the corresponding value of the `#attributes` hash. Instance variables aren't defined for them (to ensure syncronization between `#name` and `#attributes[:name]`):
+### Instance methods
+
+Instance methods (like `#name`) are just aliases for the corresponding value of the `#attributes` hash. Instance variables aren't defined for them (to ensure syncronization between `#name` and `#attributes[:name]`):
 
 ```ruby
 user = User.new(name: "John")
@@ -76,6 +81,39 @@ user.name # => :John
 # but
 user.instance_variable_get :@name # => nil
 ```
+
+### Inheritance
+
+Subclasses inherits attributes of the superclass:
+
+```ruby
+class UserWithRole < User
+  attribute :role, default: :user
+end
+
+user = UserWithRole.new(name: "Sam")
+user.attributes
+# => { name: :Sam, sex: :male, age: 0, position: nil, role: :user }
+```
+
+### Undefining Attributes
+
+This feature is not available (and it won't be).
+
+The reason is that a subclass should satisfy a contract of its superclass, including the existence of attributes, declared by the superclass.
+All you can do is reload attribute definition in a subclass:
+
+```ruby
+class Person < User
+  attribute :name, &:to_s
+end
+
+user = Person.new(name: :Sam)
+user.attributes
+# => { name: "Sam", sex: :male, age: 0, position: nil }
+```
+
+### Freezing
 
 You're free to redefine attributes (class settings are used by the initializer only):
 

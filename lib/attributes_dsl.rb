@@ -62,6 +62,11 @@ module AttributesDSL
     klass.__send__(:include, InstanceMethods)
   end
 
+  # @private
+  def inherited(klass)
+    klass.instance_variable_set(:@attributes, attributes)
+  end
+
   # Defines instance methods for the hash of attributes and its initializer
   module InstanceMethods
 
