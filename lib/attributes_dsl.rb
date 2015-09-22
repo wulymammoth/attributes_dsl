@@ -31,10 +31,10 @@ module AttributesDSL
   #     extend AttributeDSL
   #
   #     attribute :foo, required: true do |value|
-  #       value.to_i % 5
+  #       value.to_i % 5 # value coercer
   #     end
   #
-  #     attribute :bar, default: :BAR
+  #     attribute :bar, default: :BAR, reader: false
   #   end
   #
   # @param [#to_sym] name The unique name of the attribute
@@ -46,6 +46,8 @@ module AttributesDSL
   #   This option is ignored (set to +false+) when default value is provided
   # @option options [Object] :default
   #   The default value for the attribute
+  # @option options [Boolean] :reader (true)
+  #   Whether the attribute reader should be added
   #
   # @return [undefined]
   #
@@ -53,13 +55,13 @@ module AttributesDSL
     s_name = name.to_sym
     @attributes = attributes.register(s_name, options, &coercer)
 
+    return unless options.fetch(:reader) { true }
     define_method(s_name) { attributes.fetch(s_name) }
   end
 
   # @private
   def self.extended(klass)
-    # use __send__ for compatibility to 1.9.3 (where `.include` was private)
-    klass.__send__(:include, InstanceMethods)
+    klass.instance_eval { include InstanceMethods }
   end
 
   # @private

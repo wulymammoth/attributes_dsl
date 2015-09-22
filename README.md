@@ -37,7 +37,8 @@ class User
   attribute :age, &:to_i
 
   # `position` is optional and set to `nil` by default
-  attribute :position
+  # The reader method is not added (only the hash key)
+  attribute :position, reader: false
 
   # All other attributes are ignored
 end
@@ -50,7 +51,7 @@ user.attributes
 user.name     # => :Jane
 user.sex      # => :female
 user.age      # => 26
-user.position # => nil
+user.position # => #<NoMethodError ...>
 
 # Required attributes should be assigned:
 user = User.new(sex: :women, age: "26", place: "Moscow")
@@ -62,10 +63,11 @@ Additional Details
 
 ### Attribute declaration
 
-The `attribute` class method takes the `name` and 2 options:
+The `attribute` class method takes the `name` and 3 options:
 
-- `:default` for the default value (otherwise `nil`);
+- `:default` for the default value (otherwise `nil`).
 - `:required` to declare the attribute as required. It will be ignored if a default value is provided!
+- `:reader` defines whether the attribute reader should be defined (`true` by default).
 
 It is also takes the block, used to coerce a value. The coercer is applied to the default value too.
 
@@ -76,9 +78,8 @@ Instance methods (like `#name`) are just aliases for the corresponding value of 
 ```ruby
 user = User.new(name: "John")
 user.attributes # => { name: :John, sex: :male, age: 0, position: nil }
-user.name # => :John
 
-# but
+user.name # => :John
 user.instance_variable_get :@name # => nil
 ```
 

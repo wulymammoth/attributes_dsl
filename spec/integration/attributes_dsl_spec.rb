@@ -7,14 +7,13 @@ describe AttributesDSL do
 
   before do
     klass.attribute(:foo, &:to_s)
-    klass.attribute("bar")
+    klass.attribute("bar", reader: false)
     klass.attribute(:baz, &:to_i)
   end
 
   subject { klass.new(arguments) }
 
   describe "instance" do
-
     context "without arguments" do
       subject { klass.new }
 
@@ -40,10 +39,13 @@ describe AttributesDSL do
         expect(subject.attributes).to eql(foo: "", bar: :BAR, baz: 42)
       end
 
-      it "defines methods for every attribute" do
+      it "defines methods for attributes" do
         expect(subject.foo).to eql ""
-        expect(subject.bar).to eql :BAR
         expect(subject.baz).to eql 42
+      end
+
+      it "skips method definition when :reader is false" do
+        expect(subject).not_to respond_to :bar
       end
 
       it "doesn't freeze argument" do
@@ -60,7 +62,6 @@ describe AttributesDSL do
         expect { subject }.to raise_error ArgumentError
       end
     end
-
   end # describe instance
 
   describe "subclass" do

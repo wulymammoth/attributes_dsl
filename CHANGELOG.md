@@ -1,3 +1,11 @@
+## version 0.0.3 to be released
+
+### Added
+
+* Option `:reader` that allows skipping attribute reader (nepalez)
+
+[Compare v0.0.2...HEAD](https://github.com/nepalez/attributes_dsl/compare/v0.0.2...HEAD)
+
 ## version 0.0.2 2015-09-11
 
 This version is a result of applying v0.0.1 to the existing gems:
