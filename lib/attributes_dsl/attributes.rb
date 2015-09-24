@@ -11,6 +11,8 @@ module AttributesDSL
   #
   class Attributes
 
+    include Immutability
+
     # @!attribute [r] attributes
     #
     # Uses the set of attributes to ensure their uniqueness (by name)
@@ -21,11 +23,8 @@ module AttributesDSL
 
     # Initializes an immutable collection with an initial set of attributes
     #
-    # @param [Hash] attributes
-    #
-    def initialize(attributes = {})
-      @attributes = attributes
-      IceNine.deep_freeze(self)
+    def initialize
+      @attributes = {}
     end
 
     # Initializes the attribute from given arguments
@@ -36,9 +35,8 @@ module AttributesDSL
     # @return [AttributesDSL::Attributes]
     #
     def register(name, options = {}, &coercer)
-      self.class.new(
-        attributes.merge(name => Attribute.new(name, options, &coercer))
-      )
+      attribute = Attribute.new(name, options, &coercer)
+      update { @attributes = attributes.merge(name => attribute) }
     end
 
     # Extracts instance attributes from the input hash

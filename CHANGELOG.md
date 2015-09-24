@@ -4,6 +4,10 @@
 
 * Option `:reader` that allows skipping attribute reader (nepalez)
 
+### Internal
+
+* Switched to 'immutability' API (nepalez)
+
 [Compare v0.0.2...HEAD](https://github.com/nepalez/attributes_dsl/compare/v0.0.2...HEAD)
 
 ## version 0.0.2 2015-09-11

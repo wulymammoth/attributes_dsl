@@ -1,7 +1,7 @@
 # encoding: utf-8
 
 require "equalizer"
-require "ice_nine"
+require "immutability"
 
 # Simple DSL for PORO attributes
 #

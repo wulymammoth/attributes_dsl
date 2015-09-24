@@ -14,7 +14,7 @@ describe AttributesDSL::Attribute do
   describe ".new" do
     subject { attribute }
 
-    it { is_expected.to be_frozen }
+    it { is_expected.to be_immutable }
   end # describe .new
 
   describe "#name" do

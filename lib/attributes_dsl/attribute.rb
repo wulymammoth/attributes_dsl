@@ -11,6 +11,7 @@ module AttributesDSL
   class Attribute
 
     include Equalizer.new(:name)
+    include Immutability
 
     # @!attribute [r] name
     #
@@ -50,8 +51,6 @@ module AttributesDSL
       @default = options.fetch(:default) {}
       @required = default.nil? && options.fetch(:required) { false }
       @coercer = coercer
-
-      IceNine.deep_freeze(self)
     end
 
     # Coerces an input assigned to the attribute

@@ -10,3 +10,6 @@ end
 
 # Loads the code under test
 require "attributes_dsl"
+
+# Loads specific matchers
+require "immutability/rspec"
