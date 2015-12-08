@@ -2,7 +2,6 @@ $LOAD_PATH.push File.expand_path("../lib", __FILE__)
 require "attributes_dsl/version"
 
 Gem::Specification.new do |gem|
-
   gem.name        = "attributes_dsl"
   gem.version     = AttributesDSL::VERSION.dup
   gem.author      = "Andrew Kozin"
@@ -16,11 +15,11 @@ Gem::Specification.new do |gem|
   gem.extra_rdoc_files = Dir["README.md", "LICENSE"]
   gem.require_paths    = ["lib"]
 
-  gem.required_ruby_version = ">= 1.9.3"
+  gem.required_ruby_version = ">= 2.1"
 
-  gem.add_runtime_dependency "immutability", "~> 0.0.1"
-  gem.add_runtime_dependency "equalizer", "~> 0.0", ">= 0.0.11"
+  gem.add_runtime_dependency "equalizer", "~> 0.0.11"
+  gem.add_runtime_dependency "transproc", "~> 0.4.0"
 
-  gem.add_development_dependency "hexx-rspec", "~> 0.5", ">= 0.5.2"
-
-end # Gem::Specification
+  gem.add_development_dependency "hexx-rspec", "~> 0.5.2"
+  gem.add_development_dependency "ice_nine", "~> 0.11.1"
+end

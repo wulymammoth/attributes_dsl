@@ -1,7 +1,7 @@
 # encoding: utf-8
 
 require "equalizer"
-require "immutability"
+require "transproc"
 
 # Simple DSL for PORO attributes
 #
@@ -11,6 +11,7 @@ require "immutability"
 #
 module AttributesDSL
 
+  require_relative "attributes_dsl/transprocs"
   require_relative "attributes_dsl/attribute"
   require_relative "attributes_dsl/attributes"
 
@@ -38,25 +39,14 @@ module AttributesDSL
   #   end
   #
   # @param [#to_sym] name The unique name of the attribute
-  # @param [Proc] coercer The proc to coerce values (including the default ones)
   # @param [Hash] options
-  #
-  # @option options [Boolean] :required
-  #   Whether the attribute should be required by the +initializer+
-  #   This option is ignored (set to +false+) when default value is provided
-  # @option options [Object] :default
-  #   The default value for the attribute
-  # @option options [Boolean] :reader (true)
-  #   Whether the attribute reader should be added
+  # @param [Proc] coercer The proc to coerce values (including the default ones)
   #
   # @return [undefined]
   #
   def attribute(name, options = {}, &coercer)
-    s_name = name.to_sym
-    @attributes = attributes.register(s_name, options, &coercer)
-
-    return unless options.fetch(:reader) { true }
-    define_method(s_name) { attributes.fetch(s_name) }
+    @attributes = attributes.add(name, options, &coercer)
+    define_method(name) { attributes.fetch(name) } if attributes.reader? name
   end
 
   # @private
@@ -71,7 +61,6 @@ module AttributesDSL
 
   # Defines instance methods for the hash of attributes and its initializer
   module InstanceMethods
-
     # @!attribute [r] attributes
     #
     # @return [Hash] the hash of initialized attributes
@@ -82,12 +71,8 @@ module AttributesDSL
     #
     # @param [Hash] attributes
     #
-    # @raise [ArgumentError] in case a required attribute is missed
-    #
     def initialize(attributes = {})
-      @attributes = self.class.attributes.extract(attributes)
+      @attributes = self.class.attributes.transformer[attributes]
     end
-
-  end # module InstanceMethods
-
-end # module AttributesDSL
+  end
+end

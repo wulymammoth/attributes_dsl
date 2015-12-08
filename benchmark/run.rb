@@ -6,10 +6,10 @@ module AttributesDSLExample
   class User
     extend AttributesDSL
 
-    attribute :foo, required: true, &:to_s
-    attribute :bar, default: :BAR, &:to_s
-    attribute :baz, default: :BAZ, &:to_s
-    attribute :qux, &:to_s
+    attribute :foo, required: true
+    attribute :bar, default: :BAR
+    attribute :baz, default: :BAZ
+    attribute :qux
   end
 
   def self.call

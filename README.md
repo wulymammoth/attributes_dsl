@@ -21,41 +21,21 @@ require "attributes_dsl"
 class User
   extend AttributesDSL
 
-  # `name` is required should be symbolized
-  attribute :name, required: true do |value|
-    value.to_s.to_sym
-  end
-
-  # `sex` is optional and set to `:male` by default.
-  # It can be set to either :male or :female
-  attribute :sex, default: :male do |value|
-    (value == :male )? :male : :female
-  end
-
-  # `age` is optional and set to `nil` by default.
-  # Then it is converted to integer
-  attribute :age, &:to_i
-
-  # `position` is optional and set to `nil` by default
-  # The reader method is not added (only the hash key)
-  attribute :position, reader: false
-
-  # All other attributes are ignored
+  attribute :name, required: true, coerce: -> v { v.to_s }
+  attribute :sex,  default: :male, only: /male|female/
+  attribute :age,  only: 18..25
+  attribute :city, reader: false, except: %w(Moscow)
 end
 
-user = User.new(name: "Jane", sex: :women, age: "26", place: "Moscow")
+user = User.new(name: :Jane, sex: :female, age: 24, city: "Kiev")
 user.attributes
-# => { name: :Jane, sex: :female, age: 26, position: nil }
+# => { name: :Jane, sex: :female, age: 26, city: "Kiev" }
 
 # Aliases for attributes[:some_attribute]
-user.name     # => :Jane
-user.sex      # => :female
-user.age      # => 26
-user.position # => #<NoMethodError ...>
-
-# Required attributes should be assigned:
-user = User.new(sex: :women, age: "26", place: "Moscow")
-# => #<ArgumentError "Undefined attributes: name">
+user.name # => "Jane"
+user.sex  # => :female
+user.age  # => 26
+user.city # => #<NoMethodError ...>
 ```
 
 Additional Details
@@ -68,6 +48,9 @@ The `attribute` class method takes the `name` and 3 options:
 - `:default` for the default value (otherwise `nil`).
 - `:required` to declare the attribute as required. It will be ignored if a default value is provided!
 - `:reader` defines whether the attribute reader should be defined (`true` by default).
+- `:only` defines allowed values. You can use procs (`-> v { v.to_s }`), ranges (`18..25`), regexps (`/male|female/`), constants (`String`), or arrays (`[:male, :female]`) to define a restriction.
+- `:except` defines forbidden values.
+- `:coercer` defines a procedure to convert assigned value.
 
 It is also takes the block, used to coerce a value. The coercer is applied to the default value too.
 
@@ -77,7 +60,7 @@ Instance methods (like `#name`) are just aliases for the corresponding value of 
 
 ```ruby
 user = User.new(name: "John")
-user.attributes # => { name: :John, sex: :male, age: 0, position: nil }
+user.attributes # => { name: :John, sex: :male, age: nil, city: nil }
 
 user.name # => :John
 user.instance_variable_get :@name # => nil
@@ -94,7 +77,8 @@ end
 
 user = UserWithRole.new(name: "Sam")
 user.attributes
-# => { name: :Sam, sex: :male, age: 0, position: nil, role: :user }
+user.attributes
+# => { name: :John, sex: :male, age: nil, city: nil, role: :user }
 ```
 
 ### Undefining Attributes
@@ -161,29 +145,21 @@ The results are following:
 
 ```
 -------------------------------------------------
-               anima    211.638k (± 3.7%) i/s -      1.071M
-              kwattr    187.276k (± 3.6%) i/s -    947.484k
-     fast_attributes    160.916k (± 2.4%) i/s -    816.726k
-      attributes_dsl     71.850k (± 3.0%) i/s -    365.365k
-         active_attr     71.489k (± 3.6%) i/s -    357.995k
-              virtus     45.554k (± 7.1%) i/s -    229.338k
-
-Comparison:
-               anima:   211637.9 i/s
-              kwattr:   187276.2 i/s - 1.13x slower
-     fast_attributes:   160916.1 i/s - 1.32x slower
-      attributes_dsl:    71850.0 i/s - 2.95x slower
-         active_attr:    71489.1 i/s - 2.96x slower
-              virtus:    45553.8 i/s - 4.65x slower
+              kwattr:   183416.9 i/s
+               anima:   169647.3 i/s - 1.08x slower
+     fast_attributes:   156036.2 i/s - 1.18x slower
+      attributes_dsl:    74495.9 i/s - 2.46x slower
+         active_attr:    74469.4 i/s - 2.46x slower
+              virtus:    46587.0 i/s - 3.94x slower
 ```
 
 Results above are pretty reasonable.
 
 The gem is faster than `virtus` that has many additional features.
 
-It is as fast as `active_attrs` (but has more customizable coercers).
+It is as fast as `active_attrs` (but has more options).
 
-It is 2 times slower than `fast_attributes` that has no coercer and default values. And it is 3 times slower than `anima` and `kwattr` that provides only the base settings.
+It is 2 times slower than `fast_attributes` that has no coercer and default values. And it is 2.5 times slower than `anima` and `kwattr` that provide only simple attribute's declaration.
 
 Installation
 ------------
@@ -210,11 +186,9 @@ gem install attributes_dsl
 Compatibility
 -------------
 
-Tested under rubies [compatible to MRI 1.9+][versions].
+Tested under rubies [compatible to MRI 2.1+][versions].
 
 Uses [RSpec][rspec] 3.0+ for testing and [hexx-suit][hexx-suit] for dev/test tools collection.
-
-100% [mutant]-proof covered.
 
 Contributing
 ------------
@@ -223,7 +197,6 @@ Contributing
 * [Fork the project](https://github.com/nepalez/attributes_dsl)
 * Create your feature branch (`git checkout -b my-new-feature`)
 * Add tests for it
-* Run `rake mutant` or `rake exhort` to ensure 100% [mutant][mutant] coverage
 * Commit your changes (`git commit -am '[UPDATE] Add some feature'`)
 * Push to the branch (`git push origin my-new-feature`)
 * Create a new Pull Request

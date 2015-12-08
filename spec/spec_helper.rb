@@ -12,4 +12,4 @@ end
 require "attributes_dsl"
 
 # Loads specific matchers
-require "immutability/rspec"
+require "ice_nine"
