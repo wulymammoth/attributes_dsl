@@ -186,7 +186,7 @@ gem install attributes_dsl
 Compatibility
 -------------
 
-Tested under rubies [compatible to MRI 2.1+][versions].
+Tested under rubies compatible to [MRI 2.0+][versions].
 
 Uses [RSpec][rspec] 3.0+ for testing and [hexx-suit][hexx-suit] for dev/test tools collection.
 

@@ -21,9 +21,8 @@ module AttributesDSL
     #
     def self.filter(attributes, keys)
       attributes
-        .map { |key, value| [key.to_sym, value] }
+        .inject({}) { |hash, (key, value)| hash.merge(key.to_sym => value) }
         .select { |key, _| keys.include? key }
-        .to_h
     end
 
     # Ensures all given keys are present in the hash
@@ -38,7 +37,9 @@ module AttributesDSL
     # @return [Hash]
     #
     def self.update(attributes, keys)
-      keys.map { |key| [key, attributes[key]] }.to_h
+      keys
+        .inject({}) { |hash, key| hash.merge(key => nil) }
+        .merge(attributes)
     end
 
     # Checks whether the name is present in attributes' keys,
