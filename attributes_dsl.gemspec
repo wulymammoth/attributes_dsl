@@ -18,8 +18,7 @@ Gem::Specification.new do |gem|
   gem.required_ruby_version = ">= 2.0"
 
   gem.add_runtime_dependency "equalizer", "~> 0.0.11"
-  gem.add_runtime_dependency "transproc", "~> 0.4.0"
+  gem.add_runtime_dependency "transproc", "~> 1.1"
 
-  gem.add_development_dependency "hexx-rspec", "~> 0.5.2"
-  gem.add_development_dependency "ice_nine", "~> 0.11.1"
+  gem.add_development_dependency "ice_nine", "~> 0.11"
 end
